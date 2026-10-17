@@ -22,168 +22,48 @@ window.__ModuleLoader__.load({
 
     const ZH = {
       panel: '数据库',
-      'conn.title': '连接',
-      'conn.add': '添加连接',
-      'conn.empty': '还没有保存的连接。添加一个 SQLite 文件即可开始。',
-      'conn.name': '名称',
-      'conn.path': '数据库文件',
-      'conn.pathHint': '绝对路径，例如 C:\\Users\\me\\data\\app.db',
-      'conn.readOnly': '只读打开',
-      'conn.readOnlyHint': '只读连接会拒绝任何改动语句。模型要写入时必须由你在面板里关掉只读。',
-      'conn.save': '保存',
-      'conn.cancel': '取消',
-      'conn.delete': '删除连接',
-      'conn.deleteConfirm': '删除连接“{name}”？只删除这条记录，不动数据库文件。',
-      'conn.test': '测试',
-      'conn.browse': '浏览',
-      'conn.edit': '编辑',
-      'conn.required': '名称和文件路径都要填。',
-      'conn.readonlyBadge': '只读',
-      'conn.writeBadge': '可写',
-      'objects.title': '对象',
-      'objects.empty': '这个库里没有表或视图。',
-      'objects.tables': '表',
-      'objects.views': '视图',
-      'objects.rows': '{n} 行',
-      'tabs.data': '数据',
-      'tabs.structure': '结构',
-      'tabs.sql': 'SQL',
-      'tabs.history': '历史',
-      'grid.empty': '没有行。',
-      'grid.null': 'NULL',
-      'grid.blob': '<二进制 {n} 字节>',
-      'grid.rows': '{from}–{to} / 共 {total} 行',
-      'grid.rowsUnknown': '{from}–{to}',
-      'grid.prev': '上一页',
-      'grid.next': '下一页',
-      'grid.sortAsc': '升序',
-      'grid.sortDesc': '降序',
-      'data.search': '在整表里搜索…',
-      'data.refresh': '刷新',
-      'data.exportCsv': '导出 CSV',
-      'data.exportJson': '导出 JSON',
-      'data.pickTable': '从左侧选一张表。',
-      'data.pageSize': '每页',
-      'structure.columns': '列',
-      'structure.indexes': '索引',
-      'structure.foreignKeys': '外键',
-      'structure.ddl': '建表语句',
-      'structure.primaryKey': '主键',
-      'structure.notNull': '非空',
-      'structure.default': '默认值',
-      'structure.unique': '唯一',
-      'structure.noIndexes': '没有索引。',
-      'structure.noForeignKeys': '没有外键。',
-      'sql.placeholder': '在这里写 SQL，Ctrl+Enter 执行',
-      'sql.run': '执行',
-      'sql.explain': '执行计划',
-      'sql.allowWrite': '允许改动语句',
-      'sql.allowWriteHint': '这条连接是可写的；改动语句只在你勾选后执行。',
-      'sql.readOnlyHint': '这条连接是只读的，改动语句会被拒绝。',
-      'sql.empty': '结果会显示在这里。',
-      'sql.summary': '{statements} 条语句，{rows} 行，{ms} ms',
-      'sql.changes': '影响 {n} 行',
-      'sql.truncated': '只返回前 {n} 行',
-      'history.empty': '还没有执行记录。',
-      'history.pick': '载入到编辑器',
-      'history.clear': '清空历史',
-      'history.clearConfirm': '清空这条连接的执行历史？',
-      'state.sqliteMissing': '这个运行时没有 node:sqlite，插件无法打开数据库。',
-      'state.addFirst': '添加第一个连接',
-      'state.toolHint': '模型也能直接查询这些连接：它调用 db 工具，走同一套只读规则。',
-      'state.error': '出错了',
-      'busy.load': '读取中…',
-      'busy.query': '执行中…',
-      'busy.schema': '读取结构…',
-      'busy.export': '导出中…',
-      'busy.save': '保存中…',
-      'unit.ms': '毫秒',
-      'stats.pages': '{pages} 页 × {size} 字节',
-      'stats.version': 'SQLite {version}',
-      'stats.bytes': '{n} 字节',
+      'conn.title': '连接', 'conn.add': '添加连接', 'conn.empty': '还没有保存的连接。添加一个 SQLite 文件即可开始。', 'conn.name': '名称',
+      'conn.path': '数据库文件', 'conn.pathHint': '绝对路径，例如 C:\\Users\\me\\data\\app.db', 'conn.readOnly': '只读打开', 'conn.readOnlyHint': '只读连接会拒绝任何改动语句。模型要写入时必须由你在面板里关掉只读。',
+      'conn.save': '保存', 'conn.cancel': '取消', 'conn.delete': '删除连接', 'conn.deleteConfirm': '删除连接“{name}”？只删除这条记录，不动数据库文件。',
+      'conn.test': '测试', 'conn.edit': '编辑', 'conn.required': '名称和文件路径都要填。', 'conn.readonlyBadge': '只读',
+      'conn.writeBadge': '可写', 'objects.title': '对象', 'objects.empty': '这个库里没有表或视图。', 'objects.tables': '表',
+      'objects.views': '视图', 'objects.rows': '{n} 行', 'tabs.data': '数据', 'tabs.structure': '结构',
+      'tabs.sql': 'SQL', 'tabs.history': '历史', 'grid.empty': '没有行。', 'grid.null': 'NULL',
+      'grid.blob': '<二进制 {n} 字节>', 'grid.rows': '{from}–{to} / 共 {total} 行', 'grid.rowsUnknown': '{from}–{to}', 'grid.prev': '上一页',
+      'grid.next': '下一页', 'grid.sortAsc': '升序', 'grid.sortDesc': '降序', 'data.search': '在整表里搜索…',
+      'data.refresh': '刷新', 'data.exportCsv': '导出 CSV', 'data.exportJson': '导出 JSON', 'data.pickTable': '从左侧选一张表。',
+      'data.pageSize': '每页', 'structure.columns': '列', 'structure.indexes': '索引', 'structure.foreignKeys': '外键',
+      'structure.ddl': '建表语句', 'structure.primaryKey': '主键', 'structure.notNull': '非空', 'structure.default': '默认值',
+      'structure.unique': '唯一', 'structure.noIndexes': '没有索引。', 'structure.noForeignKeys': '没有外键。', 'sql.placeholder': '在这里写 SQL，Ctrl+Enter 执行',
+      'sql.run': '执行', 'sql.explain': '执行计划', 'sql.allowWrite': '允许改动语句', 'sql.allowWriteHint': '这条连接是可写的；改动语句只在你勾选后执行。',
+      'sql.readOnlyHint': '这条连接是只读的，改动语句会被拒绝。', 'sql.empty': '结果会显示在这里。', 'sql.summary': '{statements} 条语句，{rows} 行，{ms} ms', 'sql.changes': '影响 {n} 行',
+      'sql.truncated': '只返回前 {n} 行', 'history.empty': '还没有执行记录。', 'history.pick': '载入到编辑器', 'history.clear': '清空历史',
+      'history.clearConfirm': '清空这条连接的执行历史？', 'state.sqliteMissing': '这个运行时没有 node:sqlite，插件无法打开数据库。', 'state.toolHint': '模型也能直接查询这些连接：它调用 db 工具，走同一套只读规则。', 'busy.load': '读取中…',
+      'busy.query': '执行中…', 'busy.schema': '读取结构…', 'busy.export': '导出中…', 'busy.save': '保存中…',
+      'unit.ms': '毫秒', 'stats.pages': '{pages} 页 × {size} 字节', 'stats.version': 'SQLite {version}',
     }
 
     const EN = {
       panel: 'Database',
-      'conn.title': 'Connections',
-      'conn.add': 'Add connection',
-      'conn.empty': 'No saved connection yet. Add a SQLite file to start.',
-      'conn.name': 'Name',
-      'conn.path': 'Database file',
-      'conn.pathHint': 'Absolute path, for example C:\\Users\\me\\data\\app.db',
-      'conn.readOnly': 'Open read-only',
-      'conn.readOnlyHint': 'A read-only connection refuses every statement that changes the database. Turn it off here when the model should be able to write.',
-      'conn.save': 'Save',
-      'conn.cancel': 'Cancel',
-      'conn.delete': 'Delete connection',
-      'conn.deleteConfirm': 'Delete the connection "{name}"? This removes the entry only, not the database file.',
-      'conn.test': 'Test',
-      'conn.browse': 'Browse',
-      'conn.edit': 'Edit',
-      'conn.required': 'A name and a file path are both required.',
-      'conn.readonlyBadge': 'read-only',
-      'conn.writeBadge': 'writable',
-      'objects.title': 'Objects',
-      'objects.empty': 'This database has no tables or views.',
-      'objects.tables': 'Tables',
-      'objects.views': 'Views',
-      'objects.rows': '{n} rows',
-      'tabs.data': 'Data',
-      'tabs.structure': 'Structure',
-      'tabs.sql': 'SQL',
-      'tabs.history': 'History',
-      'grid.empty': 'No rows.',
-      'grid.null': 'NULL',
-      'grid.blob': '<blob {n} bytes>',
-      'grid.rows': '{from}–{to} of {total} rows',
-      'grid.rowsUnknown': '{from}–{to}',
-      'grid.prev': 'Previous',
-      'grid.next': 'Next',
-      'grid.sortAsc': 'ascending',
-      'grid.sortDesc': 'descending',
-      'data.search': 'Search every column…',
-      'data.refresh': 'Refresh',
-      'data.exportCsv': 'Export CSV',
-      'data.exportJson': 'Export JSON',
-      'data.pickTable': 'Pick a table on the left.',
-      'data.pageSize': 'Per page',
-      'structure.columns': 'Columns',
-      'structure.indexes': 'Indexes',
-      'structure.foreignKeys': 'Foreign keys',
-      'structure.ddl': 'Create statement',
-      'structure.primaryKey': 'primary key',
-      'structure.notNull': 'not null',
-      'structure.default': 'default',
-      'structure.unique': 'unique',
-      'structure.noIndexes': 'No indexes.',
-      'structure.noForeignKeys': 'No foreign keys.',
-      'sql.placeholder': 'Write SQL here; Ctrl+Enter runs it',
-      'sql.run': 'Run',
-      'sql.explain': 'Query plan',
-      'sql.allowWrite': 'Allow statements that change the database',
-      'sql.allowWriteHint': 'This connection is writable; changes run only after you tick this box.',
-      'sql.readOnlyHint': 'This connection is read-only, so changes are refused.',
-      'sql.empty': 'Results appear here.',
-      'sql.summary': '{statements} statements, {rows} rows, {ms} ms',
-      'sql.changes': '{n} rows affected',
-      'sql.truncated': 'first {n} rows only',
-      'history.empty': 'Nothing has run yet.',
-      'history.pick': 'Load into editor',
-      'history.clear': 'Clear history',
-      'history.clearConfirm': 'Clear the query history of this connection?',
-      'state.sqliteMissing': 'This runtime has no node:sqlite, so the plugin cannot open a database.',
-      'state.addFirst': 'Add the first connection',
-      'state.toolHint': 'The model can query these connections too: it calls the db tool, under the same read-only rules.',
-      'state.error': 'Something failed',
-      'busy.load': 'Reading…',
-      'busy.query': 'Running…',
-      'busy.schema': 'Reading schema…',
-      'busy.export': 'Exporting…',
-      'busy.save': 'Saving…',
-      'unit.ms': 'ms',
-      'stats.pages': '{pages} pages × {size} bytes',
-      'stats.version': 'SQLite {version}',
-      'stats.bytes': '{n} bytes',
+      'conn.title': 'Connections', 'conn.add': 'Add connection', 'conn.empty': 'No saved connection yet. Add a SQLite file to start.', 'conn.name': 'Name',
+      'conn.path': 'Database file', 'conn.pathHint': 'Absolute path, for example C:\\Users\\me\\data\\app.db', 'conn.readOnly': 'Open read-only', 'conn.readOnlyHint': 'A read-only connection refuses every statement that changes the database. Turn it off here when the model should be able to write.',
+      'conn.save': 'Save', 'conn.cancel': 'Cancel', 'conn.delete': 'Delete connection', 'conn.deleteConfirm': 'Delete the connection "{name}"? This removes the entry only, not the database file.',
+      'conn.test': 'Test', 'conn.edit': 'Edit', 'conn.required': 'A name and a file path are both required.', 'conn.readonlyBadge': 'read-only',
+      'conn.writeBadge': 'writable', 'objects.title': 'Objects', 'objects.empty': 'This database has no tables or views.', 'objects.tables': 'Tables',
+      'objects.views': 'Views', 'objects.rows': '{n} rows', 'tabs.data': 'Data', 'tabs.structure': 'Structure',
+      'tabs.sql': 'SQL', 'tabs.history': 'History', 'grid.empty': 'No rows.', 'grid.null': 'NULL',
+      'grid.blob': '<blob {n} bytes>', 'grid.rows': '{from}–{to} of {total} rows', 'grid.rowsUnknown': '{from}–{to}', 'grid.prev': 'Previous',
+      'grid.next': 'Next', 'grid.sortAsc': 'ascending', 'grid.sortDesc': 'descending', 'data.search': 'Search every column…',
+      'data.refresh': 'Refresh', 'data.exportCsv': 'Export CSV', 'data.exportJson': 'Export JSON', 'data.pickTable': 'Pick a table on the left.',
+      'data.pageSize': 'Per page', 'structure.columns': 'Columns', 'structure.indexes': 'Indexes', 'structure.foreignKeys': 'Foreign keys',
+      'structure.ddl': 'Create statement', 'structure.primaryKey': 'primary key', 'structure.notNull': 'not null', 'structure.default': 'default',
+      'structure.unique': 'unique', 'structure.noIndexes': 'No indexes.', 'structure.noForeignKeys': 'No foreign keys.', 'sql.placeholder': 'Write SQL here; Ctrl+Enter runs it',
+      'sql.run': 'Run', 'sql.explain': 'Query plan', 'sql.allowWrite': 'Allow statements that change the database', 'sql.allowWriteHint': 'This connection is writable; changes run only after you tick this box.',
+      'sql.readOnlyHint': 'This connection is read-only, so changes are refused.', 'sql.empty': 'Results appear here.', 'sql.summary': '{statements} statements, {rows} rows, {ms} ms', 'sql.changes': '{n} rows affected',
+      'sql.truncated': 'first {n} rows only', 'history.empty': 'Nothing has run yet.', 'history.pick': 'Load into editor', 'history.clear': 'Clear history',
+      'history.clearConfirm': 'Clear the query history of this connection?', 'state.sqliteMissing': 'This runtime has no node:sqlite, so the plugin cannot open a database.', 'state.toolHint': 'The model can query these connections too: it calls the db tool, under the same read-only rules.', 'busy.load': 'Reading…',
+      'busy.query': 'Running…', 'busy.schema': 'Reading schema…', 'busy.export': 'Exporting…', 'busy.save': 'Saving…',
+      'unit.ms': 'ms', 'stats.pages': '{pages} pages × {size} bytes', 'stats.version': 'SQLite {version}',
     }
 
     // ------------------------------------------------------------------ api
@@ -346,7 +226,10 @@ window.__ModuleLoader__.load({
           key: column.name,
           style: { ...S.th, cursor: onSort ? 'pointer' : 'default' },
           onClick: onSort ? () => onSort(column.name) : undefined,
-          title: column.type ? `${column.name}: ${column.type}` : column.name,
+          title: [
+            column.type ? `${column.name}: ${column.type}` : column.name,
+            onSort ? (order === column.name && dir === 'desc' ? t('grid.sortDesc') : t('grid.sortAsc')) : '',
+          ].filter(Boolean).join(' · '),
         }, column.name + (order === column.name ? (dir === 'desc' ? ' ↓' : ' ↑') : '')))))
       const body = matrix.length === 0
         ? h('tr', null, h('td', {
@@ -409,7 +292,10 @@ window.__ModuleLoader__.load({
               },
             },
             h('span', { style: { flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' } }, object.name),
-            object.rows === null ? null : h('span', { style: { fontSize: 10, color: color.idle } }, String(object.rows) + (object.rowsCapped ? '+' : '')))))
+            object.rows === null ? null : h('span', {
+              style: { fontSize: 10, color: color.idle },
+              title: t('objects.rows', { n: object.rows + (object.rowsCapped ? '+' : '') }),
+            }, String(object.rows) + (object.rowsCapped ? '+' : '')))))
         }))
     }
 
@@ -551,13 +437,21 @@ window.__ModuleLoader__.load({
             h(Btn, { label: t('sql.explain'), onClick: onExplain, disabled: busy }),
             connection && connection.readOnly
               ? h('span', { style: { ...S.hint, marginLeft: 6 } }, t('sql.readOnlyHint'))
-              : h('label', { style: { display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: color.muted } },
-                h('input', {
-                  type: 'checkbox', checked: allowWrite,
-                  onChange: event => setAllowWrite(event.target.checked),
-                }),
-                t('sql.allowWrite')),
+              : h(React.Fragment, null,
+                h('label', { style: { display: 'flex', alignItems: 'center', gap: 6, fontSize: 12, color: color.muted } },
+                  h('input', {
+                    type: 'checkbox', checked: allowWrite,
+                    onChange: event => setAllowWrite(event.target.checked),
+                  }),
+                  t('sql.allowWrite')),
+                h('span', { style: S.hint }, t('sql.allowWriteHint'))),
             h('span', { style: { flex: 1 } }),
+            // A short result must say it is short, otherwise the row count reads as
+            // the whole answer.
+            withColumns && withColumns.truncated
+              ? h('span', { style: { ...S.hint, color: color.warn } },
+                t('sql.truncated', { n: withColumns.rows.length }))
+              : null,
             result
               ? h('span', { style: S.hint }, t('sql.summary', {
                 statements: result.statements.length,
@@ -603,7 +497,7 @@ window.__ModuleLoader__.load({
           item.error ? h('div', { style: { fontSize: 12, color: color.error, whiteSpace: 'pre-wrap' } }, item.error) : null))))
     }
 
-    function ConnectionForm({ t, initial, busy, onSave, onCancel, onDelete }) {
+    function ConnectionForm({ t, initial, busy, onSave, onCancel, onDelete, onTest, testResult }) {
       const [name, setName] = useState(initial?.name || '')
       const [path, setPath] = useState(initial?.path || '')
       const [readOnly, setReadOnly] = useState(initial ? initial.readOnly : true)
@@ -625,6 +519,14 @@ window.__ModuleLoader__.load({
           t('conn.readOnly')),
         h('div', { style: S.hint }, t('conn.readOnlyHint')),
         problem ? h('div', { style: { color: color.error, fontSize: 12 } }, problem) : null,
+        // Testing needs a saved id, so the control only appears when editing.
+        initial && onTest
+          ? h('div', { style: { ...S.row, gap: 8 } },
+            h(Btn, { label: t('conn.test'), onClick: onTest, disabled: busy }),
+            testResult
+              ? h('span', { style: S.hint }, t('stats.version', { version: testResult.version }))
+              : null)
+          : null,
         h('div', { style: S.row },
           h(Btn, { label: t('conn.save'), kind: 'primary', onClick: submit, disabled: busy }),
           h(Btn, { label: t('conn.cancel'), onClick: onCancel, disabled: busy }),
@@ -651,6 +553,7 @@ window.__ModuleLoader__.load({
       const [allowWrite, setAllowWrite] = useState(false)
       const [history, setHistory] = useState([])
       const [form, setForm] = useState(null)
+      const [probe, setProbe] = useState(null)
 
       const connections = boot?.connections || []
       const connection = connections.find(item => item.id === activeId) || null
@@ -776,11 +679,18 @@ window.__ModuleLoader__.load({
         if (!saved) return
         const next = await loadState()
         setForm(null)
+        setProbe(null)
         if (next) {
           if (saved.id) setActiveId(saved.id)
           else if (next.connections[0]) setActiveId(next.connections[0].id)
         }
       }, [guard, loadState, t])
+
+      const testConnection = useCallback(async id => {
+        if (!id) return
+        const data = await guard('', () => action('test', { id }))
+        if (data) setProbe(data)
+      }, [guard])
 
       const deleteConnection = useCallback(async id => {
         const target = connections.find(item => item.id === id)
@@ -834,7 +744,7 @@ window.__ModuleLoader__.load({
               t,
               connection: item,
               active: item.id === activeId,
-              onSelect: id => { setActiveId(id); setForm(null) },
+              onSelect: id => { setActiveId(id); setForm(null); setProbe(null) },
               onEdit: target => setForm({ mode: 'edit', connection: target }),
             })),
             form ? h(ConnectionForm, {
@@ -842,8 +752,10 @@ window.__ModuleLoader__.load({
               initial: form.connection || null,
               busy: busy === t('busy.save'),
               onSave: saveConnection,
-              onCancel: () => setForm(null),
+              onCancel: () => { setForm(null); setProbe(null) },
               onDelete: form.connection ? () => deleteConnection(form.connection.id) : null,
+              onTest: form.connection ? () => testConnection(form.connection.id) : null,
+              testResult: probe,
             }) : null,
             connections.length === 0 && !form
               ? h('div', { style: { ...S.hint, padding: 10 } }, t('conn.empty'))
