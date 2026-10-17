@@ -934,10 +934,14 @@ window.__ModuleLoader__.load({
 
     // ---------------------------------------------------------- registration
 
-    function Icon() {
+    function Icon(props) {
+      // The sidebar row supplies a square edge, so the mark follows the collapsed
+      // rail instead of staying fixed at 20px.
+      const size = (props && props.size) || 20
       return h('svg', {
-        viewBox: '0 0 24 24', width: 20, height: 20, fill: 'none',
+        viewBox: '0 0 24 24', width: size, height: size, fill: 'none',
         stroke: 'currentColor', strokeWidth: 1.7, strokeLinecap: 'round', 'aria-hidden': true,
+        style: { display: 'block' },
       },
       h('ellipse', { cx: 12, cy: 5.5, rx: 7.5, ry: 3 }),
       h('path', { d: 'M4.5 5.5v6c0 1.66 3.36 3 7.5 3s7.5-1.34 7.5-3v-6' }),
