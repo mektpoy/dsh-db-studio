@@ -41,6 +41,10 @@ window.__ModuleLoader__.load({
       'history.clearConfirm': '清空这条连接的执行历史？', 'state.sqliteMissing': '这个运行时没有 node:sqlite，插件无法打开数据库。', 'state.toolHint': '模型也能直接查询这些连接：它调用 db 工具，走同一套只读规则。', 'busy.load': '读取中…',
       'busy.query': '执行中…', 'busy.schema': '读取结构…', 'busy.export': '导出中…', 'busy.save': '保存中…',
       'unit.ms': '毫秒', 'stats.pages': '{pages} 页 × {size} 字节', 'stats.version': 'SQLite {version}',
+      'conn.driver': '类型', 'conn.driverSqlite': 'SQLite', 'conn.driverPostgres': 'PostgreSQL', 'conn.host': '主机',
+      'conn.port': '端口', 'conn.database': '数据库', 'conn.username': '用户', 'conn.password': '密码',
+      'conn.passwordHint': '密码存在 Harness 凭据库里，不写进插件库；留空表示不改。', 'conn.ssl': '使用 TLS',
+      'conn.postgresRequired': '主机和数据库名都要填。', 'stats.postgres': '{size} · {tables} 表 / {views} 视图',
     }
 
     const EN = {
@@ -64,6 +68,11 @@ window.__ModuleLoader__.load({
       'history.clearConfirm': 'Clear the query history of this connection?', 'state.sqliteMissing': 'This runtime has no node:sqlite, so the plugin cannot open a database.', 'state.toolHint': 'The model can query these connections too: it calls the db tool, under the same read-only rules.', 'busy.load': 'Reading…',
       'busy.query': 'Running…', 'busy.schema': 'Reading schema…', 'busy.export': 'Exporting…', 'busy.save': 'Saving…',
       'unit.ms': 'ms', 'stats.pages': '{pages} pages × {size} bytes', 'stats.version': 'SQLite {version}',
+      'conn.driver': 'Type', 'conn.driverSqlite': 'SQLite', 'conn.driverPostgres': 'PostgreSQL', 'conn.host': 'Host',
+      'conn.port': 'Port', 'conn.database': 'Database', 'conn.username': 'User', 'conn.password': 'Password',
+      'conn.passwordHint': 'Stored in the Harness credential store, not the plugin database. Leave empty to keep the saved one.',
+      'conn.ssl': 'Use TLS', 'conn.postgresRequired': 'A host and a database name are both required.',
+      'stats.postgres': '{size} · {tables} tables / {views} views',
     }
 
     // ------------------------------------------------------------------ api
@@ -245,6 +254,13 @@ window.__ModuleLoader__.load({
 
     // -------------------------------------------------------------- rail
 
+    /** One line describing where a connection points, whatever its driver. */
+    function addressOf(connection) {
+      return connection.driver === 'postgres'
+        ? `${connection.host}:${connection.port}/${connection.dbname}`
+        : connection.path
+    }
+
     function ConnectionItem({ t, connection, active, onSelect, onEdit }) {
       const style = {
         width: '100%', textAlign: 'left', border: 'none', borderRadius: 6, cursor: 'pointer',
@@ -252,9 +268,10 @@ window.__ModuleLoader__.load({
         padding: '7px 8px', display: 'flex', flexDirection: 'column', gap: 2, fontFamily: 'inherit',
         color: active ? color.text : color.muted,
       }
-      return h('button', { type: 'button', style, onClick: () => onSelect(connection.id), title: connection.path },
+      return h('button', { type: 'button', style, onClick: () => onSelect(connection.id), title: addressOf(connection) },
         h('span', { style: { display: 'flex', alignItems: 'center', gap: 6, fontSize: 12 } },
           h('span', { style: { flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' } }, connection.name),
+          connection.driver === 'postgres' ? h(Badge, { text: t('conn.driverPostgres') }) : null,
           h(Badge, {
             text: connection.readOnly ? t('conn.readonlyBadge') : t('conn.writeBadge'),
             tone: connection.readOnly ? 'ok' : 'warn',
@@ -262,7 +279,7 @@ window.__ModuleLoader__.load({
         h('span', {
           style: { fontSize: 10, color: color.idle, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
           onClick: event => { if (event.altKey) onEdit(connection) },
-        }, connection.path))
+        }, addressOf(connection)))
     }
 
     function ObjectTree({ t, objects, selected, onSelect }) {
@@ -498,22 +515,70 @@ window.__ModuleLoader__.load({
     }
 
     function ConnectionForm({ t, initial, busy, onSave, onCancel, onDelete, onTest, testResult }) {
+      const [driver, setDriver] = useState(initial?.driver || 'sqlite')
       const [name, setName] = useState(initial?.name || '')
       const [path, setPath] = useState(initial?.path || '')
+      const [host, setHost] = useState(initial?.host || '')
+      const [port, setPort] = useState(String(initial?.port || 5432))
+      const [dbname, setDbname] = useState(initial?.dbname || '')
+      const [username, setUsername] = useState(initial?.username || '')
+      const [password, setPassword] = useState('')
+      const [ssl, setSsl] = useState(initial?.ssl === true)
       const [readOnly, setReadOnly] = useState(initial ? initial.readOnly : true)
-      const [note, setNote] = useState('')
       const [problem, setProblem] = useState('')
       const submit = () => {
-        if (!name.trim() || !path.trim()) { setProblem(t('conn.required')); return }
+        if (!name.trim()) { setProblem(t('conn.required')); return }
+        if (driver === 'sqlite' && !path.trim()) { setProblem(t('conn.required')); return }
+        if (driver === 'postgres' && (!host.trim() || !dbname.trim())) {
+          setProblem(t('conn.postgresRequired'))
+          return
+        }
         setProblem('')
-        onSave({ id: initial?.id, name: name.trim(), path: path.trim(), readOnly, note })
+        onSave({
+          id: initial?.id,
+          name: name.trim(),
+          driver,
+          path: path.trim(),
+          host: host.trim(),
+          port: Number(port) || 5432,
+          dbname: dbname.trim(),
+          username: username.trim(),
+          // An empty box means "keep the stored password", not "clear it".
+          password: password === '' ? undefined : password,
+          ssl,
+          readOnly,
+        })
       }
+      const text = (value, setter) => h('input', {
+        style: S.input, value, onChange: event => setter(event.target.value),
+      })
       return h('div', { style: { ...S.card, margin: 10 } },
         h('div', { style: { fontSize: 12, fontWeight: 600 } }, initial ? t('conn.edit') : t('conn.add')),
-        h(Field, { label: t('conn.name') },
-          h('input', { style: S.input, value: name, onChange: event => setName(event.target.value) })),
-        h(Field, { label: t('conn.path'), hint: t('conn.pathHint') },
-          h('input', { style: S.input, value: path, onChange: event => setPath(event.target.value) })),
+        h(Field, { label: t('conn.driver') },
+          h('select', {
+            style: S.input,
+            value: driver,
+            onChange: event => setDriver(event.target.value),
+          },
+          h('option', { value: 'sqlite' }, t('conn.driverSqlite')),
+          h('option', { value: 'postgres' }, t('conn.driverPostgres')))),
+        h(Field, { label: t('conn.name') }, text(name, setName)),
+        driver === 'sqlite'
+          ? h(Field, { label: t('conn.path'), hint: t('conn.pathHint') }, text(path, setPath))
+          : h(React.Fragment, null,
+            h(Field, { label: t('conn.host') }, text(host, setHost)),
+            h('div', { style: { display: 'flex', gap: 8 } },
+              h(Field, { label: t('conn.port') }, text(port, setPort)),
+              h(Field, { label: t('conn.database') }, text(dbname, setDbname))),
+            h(Field, { label: t('conn.username') }, text(username, setUsername)),
+            h(Field, { label: t('conn.password'), hint: t('conn.passwordHint') },
+              h('input', {
+                style: S.input, type: 'password', value: password, placeholder: '••••••',
+                onChange: event => setPassword(event.target.value),
+              })),
+            h('label', { style: { display: 'flex', alignItems: 'center', gap: 6, fontSize: 12 } },
+              h('input', { type: 'checkbox', checked: ssl, onChange: event => setSsl(event.target.checked) }),
+              t('conn.ssl'))),
         h('label', { style: { display: 'flex', alignItems: 'center', gap: 6, fontSize: 12 } },
           h('input', { type: 'checkbox', checked: readOnly, onChange: event => setReadOnly(event.target.checked) }),
           t('conn.readOnly')),
@@ -776,11 +841,17 @@ window.__ModuleLoader__.load({
               h('span', { style: { flex: 1 } }),
               boot ? h('span', { style: S.hint }, `v${boot.version}`) : null),
             h('div', { style: { ...S.row, gap: 10 } },
-              connection ? h('span', { style: { ...S.hint, ...S.mono, fontSize: 11 } }, connection.path) : null,
+              connection ? h('span', { style: { ...S.hint, ...S.mono, fontSize: 11 } }, addressOf(connection)) : null,
               connection && schema?.stats
-                ? h('span', { style: S.hint }, t('stats.pages', {
-                  pages: schema.stats.pageCount, size: schema.stats.pageSize,
-                }))
+                ? h('span', { style: S.hint }, connection.driver === 'postgres'
+                  ? t('stats.postgres', {
+                    size: schema.stats.size,
+                    tables: schema.stats.tables,
+                    views: schema.stats.views,
+                  })
+                  : t('stats.pages', {
+                    pages: schema.stats.pageCount, size: schema.stats.pageSize,
+                  }))
                 : null),
             connections.length === 0
               ? h('div', { style: S.hint }, t('state.toolHint'))

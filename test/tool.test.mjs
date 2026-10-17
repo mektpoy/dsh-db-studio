@@ -11,16 +11,16 @@ import { dbTool } from '../lib/tool.js'
 const available = sqliteStatus().available
 const skip = available ? false : 'this runtime has no node:sqlite'
 
-function fixture(options = {}) {
+async function fixture(options = {}) {
   const directory = mkdtempSync(join(tmpdir(), 'db-studio-tool-'))
   const databasePath = join(directory, 'shop.db')
   const writer = new SqliteDriver({ path: databasePath, readOnly: false })
-  writer.open()
-  writer.run(`
+  await writer.open()
+  await writer.run(`
     CREATE TABLE product (id INTEGER PRIMARY KEY, name TEXT NOT NULL, price REAL);
     INSERT INTO product (name, price) VALUES ('mug', 4.5), ('lamp', 22), ('desk', 180);
   `, { allowWrite: true })
-  writer.close()
+  await writer.close()
   const store = new StudioStore(join(directory, 'state'))
   const studio = new Studio({ store, defaultReadOnly: options.defaultReadOnly !== false })
   const tool = dbTool(studio)
@@ -28,7 +28,7 @@ function fixture(options = {}) {
 }
 
 test('connections lists what is saved', { skip }, async () => {
-  const { directory, databasePath, store, tool } = fixture()
+  const { directory, databasePath, store, tool } = await fixture()
   try {
     assert.deepEqual((await tool.execute({ action: 'connections' })).connections, [])
     await tool.execute({ action: 'add_connection', path: databasePath, name: 'shop' })
@@ -43,7 +43,7 @@ test('connections lists what is saved', { skip }, async () => {
 })
 
 test('add_connection names the connection after the file and reports a test', { skip }, async () => {
-  const { directory, databasePath, store, tool } = fixture()
+  const { directory, databasePath, store, tool } = await fixture()
   try {
     const result = await tool.execute({ action: 'add_connection', path: databasePath })
     assert.equal(result.saved.name, 'shop.db')
@@ -56,7 +56,7 @@ test('add_connection names the connection after the file and reports a test', { 
 })
 
 test('a connection can be addressed by name', { skip }, async () => {
-  const { directory, databasePath, store, tool } = fixture()
+  const { directory, databasePath, store, tool } = await fixture()
   try {
     await tool.execute({ action: 'add_connection', path: databasePath, name: 'shop' })
     const result = await tool.execute({ action: 'schema', connection: 'shop' })
@@ -69,7 +69,7 @@ test('a connection can be addressed by name', { skip }, async () => {
 })
 
 test('schema with a table returns columns, indexes and DDL', { skip }, async () => {
-  const { directory, databasePath, store, tool } = fixture()
+  const { directory, databasePath, store, tool } = await fixture()
   try {
     await tool.execute({ action: 'add_connection', path: databasePath, name: 'shop' })
     const detail = await tool.execute({ action: 'schema', connection: 'shop', table: 'product' })
@@ -83,7 +83,7 @@ test('schema with a table returns columns, indexes and DDL', { skip }, async () 
 })
 
 test('preview reports the page, the total and whether more rows exist', { skip }, async () => {
-  const { directory, databasePath, store, tool } = fixture()
+  const { directory, databasePath, store, tool } = await fixture()
   try {
     await tool.execute({ action: 'add_connection', path: databasePath, name: 'shop' })
     const page = await tool.execute({ action: 'preview', connection: 'shop', table: 'product', limit: 2 })
@@ -98,7 +98,7 @@ test('preview reports the page, the total and whether more rows exist', { skip }
 })
 
 test('query returns columns and rows', { skip }, async () => {
-  const { directory, databasePath, store, tool } = fixture()
+  const { directory, databasePath, store, tool } = await fixture()
   try {
     await tool.execute({ action: 'add_connection', path: databasePath, name: 'shop' })
     const result = await tool.execute({
@@ -114,7 +114,7 @@ test('query returns columns and rows', { skip }, async () => {
 })
 
 test('a write on a read-only connection is refused before it runs', { skip }, async () => {
-  const { directory, databasePath, store, tool } = fixture()
+  const { directory, databasePath, store, tool } = await fixture()
   try {
     await tool.execute({ action: 'add_connection', path: databasePath, name: 'shop' })
     await assert.rejects(
@@ -132,7 +132,7 @@ test('a write on a read-only connection is refused before it runs', { skip }, as
 })
 
 test('a write on a writable connection needs allowWrite', { skip }, async () => {
-  const { directory, databasePath, store, tool } = fixture({ defaultReadOnly: false })
+  const { directory, databasePath, store, tool } = await fixture({ defaultReadOnly: false })
   try {
     await tool.execute({ action: 'add_connection', path: databasePath, name: 'shop', readOnly: false })
     await assert.rejects(
@@ -150,7 +150,7 @@ test('a write on a writable connection needs allowWrite', { skip }, async () => 
 })
 
 test('explain returns plan rows', { skip }, async () => {
-  const { directory, databasePath, store, tool } = fixture()
+  const { directory, databasePath, store, tool } = await fixture()
   try {
     await tool.execute({ action: 'add_connection', path: databasePath, name: 'shop' })
     const plan = await tool.execute({ action: 'explain', connection: 'shop', sql: 'select * from product where id = 2' })
@@ -163,7 +163,7 @@ test('explain returns plan rows', { skip }, async () => {
 })
 
 test('export returns text for a table', { skip }, async () => {
-  const { directory, databasePath, store, tool } = fixture()
+  const { directory, databasePath, store, tool } = await fixture()
   try {
     await tool.execute({ action: 'add_connection', path: databasePath, name: 'shop' })
     const file = await tool.execute({
@@ -180,7 +180,7 @@ test('export returns text for a table', { skip }, async () => {
 })
 
 test('history lists what ran', { skip }, async () => {
-  const { directory, databasePath, store, tool } = fixture()
+  const { directory, databasePath, store, tool } = await fixture()
   try {
     await tool.execute({ action: 'add_connection', path: databasePath, name: 'shop' })
     await tool.execute({ action: 'query', connection: 'shop', sql: 'select 1' })
@@ -193,7 +193,7 @@ test('history lists what ran', { skip }, async () => {
 })
 
 test('remove_connection drops the record', { skip }, async () => {
-  const { directory, databasePath, store, tool } = fixture()
+  const { directory, databasePath, store, tool } = await fixture()
   try {
     await tool.execute({ action: 'add_connection', path: databasePath, name: 'shop' })
     const removed = await tool.execute({ action: 'remove_connection', connection: 'shop' })
@@ -206,7 +206,7 @@ test('remove_connection drops the record', { skip }, async () => {
 })
 
 test('an unknown action fails with the action name', { skip }, async () => {
-  const { directory, databasePath, store, tool } = fixture()
+  const { directory, databasePath, store, tool } = await fixture()
   try {
     await tool.execute({ action: 'add_connection', path: databasePath, name: 'shop' })
     await assert.rejects(() => tool.execute({ action: 'drop_everything' }), /unknown action drop_everything/)
@@ -217,7 +217,7 @@ test('an unknown action fails with the action name', { skip }, async () => {
 })
 
 test('the tool output is trimmed when a result is very long', { skip }, async () => {
-  const { directory, databasePath, store, tool } = fixture()
+  const { directory, databasePath, store, tool } = await fixture()
   try {
     await tool.execute({ action: 'add_connection', path: databasePath, name: 'shop' })
     const blocks = tool.output.render({}, { text: 'x'.repeat(50000) })
