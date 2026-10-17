@@ -1,6 +1,6 @@
 {
   "meta": {
     "title": "数据库工作室",
-    "description": "保存 SQLite 连接、浏览表结构、带只读保护地执行 SQL，模型也能通过 db 工具查询同一个库。"
+    "description": "保存 SQLite / PostgreSQL 连接、浏览表结构、带只读保护地执行 SQL，模型也能通过 db 工具查询同一个库。"
   }
 }

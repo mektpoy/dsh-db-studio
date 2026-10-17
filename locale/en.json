@@ -1,6 +1,6 @@
 {
   "meta": {
     "title": "DB Studio",
-    "description": "Saved SQLite connections, a schema browser, a SQL runner with a read-only guard, and a db tool the model can call."
+    "description": "Saved SQLite and PostgreSQL connections, a schema browser, a SQL runner with a read-only guard, and a db tool the model can call."
   }
 }
