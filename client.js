@@ -409,7 +409,7 @@ window.__ModuleLoader__.load({
               },
             },
             h('span', { style: { flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' } }, object.name),
-            object.rows === null ? null : h('span', { style: { fontSize: 10, color: color.idle } }, String(object.rows)))))
+            object.rows === null ? null : h('span', { style: { fontSize: 10, color: color.idle } }, String(object.rows) + (object.rowsCapped ? '+' : '')))))
         }))
     }
 
@@ -452,7 +452,7 @@ window.__ModuleLoader__.load({
           h('span', { style: S.hint },
             total === null
               ? t('grid.rowsUnknown', { from, to })
-              : t('grid.rows', { from, to, total })),
+              : t('grid.rows', { from, to, total: total + (page.totalCapped ? '+' : '') })),
           h('span', { style: { flex: 1 } }),
           h(Btn, {
             label: t('grid.prev'),
@@ -644,7 +644,7 @@ window.__ModuleLoader__.load({
       const [detail, setDetail] = useState(null)
       const [table, setTable] = useState('')
       const [tab, setTab] = useState('data')
-      const [page, setPage] = useState({ columns: [], rows: [], total: null, offset: 0, limit: 50, order: '', dir: 'asc', hasMore: false, search: '' })
+      const [page, setPage] = useState({ columns: [], rows: [], total: null, totalCapped: false, offset: 0, limit: 50, order: '', dir: 'asc', hasMore: false, search: '' })
       const [sql, setSql] = useState('')
       const [result, setResult] = useState(null)
       const [plan, setPlan] = useState(null)
@@ -694,8 +694,8 @@ window.__ModuleLoader__.load({
         }))
         if (data) {
           setPage({
-            columns: data.columns, rows: data.rows, total: data.total, offset: data.offset,
-            limit: data.limit, order: merged.order, dir: merged.dir, hasMore: data.hasMore, search: merged.search,
+            columns: data.columns, rows: data.rows, total: data.total, totalCapped: data.totalCapped === true,
+            offset: data.offset, limit: data.limit, order: merged.order, dir: merged.dir, hasMore: data.hasMore, search: merged.search,
           })
         }
       }, [guard, page, t])
