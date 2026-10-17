@@ -148,6 +148,17 @@ test('an unknown table name fails with a readable message', { skip }, async () =
   })
 })
 
+test('a connection without a password says so instead of relaying the SASL error', { skip }, async () => {
+  // The server this suite points at uses SCRAM, whose own message is about a
+  // non-string password and means nothing to a user.
+  const driver = new PostgresDriver({ ...config, password: undefined, readOnly: true })
+  try {
+    await assert.rejects(() => driver.test(), /no usable password/)
+  } finally {
+    await driver.close()
+  }
+})
+
 test('the service saves a PostgreSQL connection, keeps the password aside and runs a query', { skip }, async () => {
   const { mkdtempSync, rmSync } = await import('node:fs')
   const { tmpdir } = await import('node:os')

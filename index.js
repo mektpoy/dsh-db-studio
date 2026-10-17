@@ -78,12 +78,38 @@ function withTimeout(promise, ms) {
  * Passwords live in the Harness credential store, never in the plugin database.
  * The reference is an environment-variable-style name derived from the connection
  * id, so two connections can never share one secret.
+ *
+ * The store is looked up on every call instead of once at activation: services
+ * are mounted in composition order, and the credential provider may come after
+ * this plugin, in which case the service is absent while `apply` runs.
+ *
+ * @param {{ get?: Function, credentials?: unknown, reflect?: { get?: Function } }} ctx
  */
-export function createSecrets(credentials) {
+export function createSecrets(ctx) {
   const refFor = id => 'DB_STUDIO_PASSWORD_' + String(id).replace(/[^A-Za-z0-9]/g, '_').toUpperCase()
+
+  /** Find the credential service through every accessor Cordis exposes. */
+  const store = () => {
+    try {
+      if (typeof ctx.get === 'function') {
+        const found = ctx.get('credentials')
+        if (found) return found
+      }
+    } catch { /* not injected on this path */ }
+    try {
+      if (ctx.credentials) return ctx.credentials
+    } catch { /* service accessor refused */ }
+    try {
+      const found = ctx.reflect?.get?.('credentials')
+      if (found) return found
+    } catch { /* no reflector */ }
+    return undefined
+  }
+
   return {
     refFor,
     async get(id) {
+      const credentials = store()
       if (!credentials) return undefined
       try {
         const resolved = await credentials.resolve(refFor(id))
@@ -93,12 +119,14 @@ export function createSecrets(credentials) {
       }
     },
     async set(id, value) {
+      const credentials = store()
       if (!credentials) {
         throw new Error('this Harness has no credential store, so a PostgreSQL password cannot be saved')
       }
       await credentials.set(refFor(id), value)
     },
     async clear(id) {
+      const credentials = store()
       if (!credentials) return
       try { await credentials.unset(refFor(id)) } catch { /* nothing stored */ }
     },
@@ -173,14 +201,13 @@ export function apply(ctx, config) {
   // per-connection decision the user makes explicitly in the panel.
   const defaultReadOnly = config?.allowWriteByDefault !== true
 
-  // Both services are optional: without them the panel and the tool still work,
-  // they just lose the prompt digest and PostgreSQL passwords respectively.
+  // The prompt service is mounted before this plugin in the standard composition;
+  // the credential provider is not, so `createSecrets` looks it up per call.
   const systemPrompt = typeof ctx.get === 'function' ? ctx.get('systemPrompt') : ctx.systemPrompt
-  const credentials = typeof ctx.get === 'function' ? ctx.get('credentials') : ctx.credentials
 
   ctx.effect(() => {
     const store = new StudioStore(dataDir)
-    const studio = new Studio({ store, defaultReadOnly, secrets: createSecrets(credentials) })
+    const studio = new Studio({ store, defaultReadOnly, secrets: createSecrets(ctx) })
     const digest = createDigest(studio)
     const disposers = [
       ...registerRoutes(ctx, {
